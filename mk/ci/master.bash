@@ -16,6 +16,10 @@ elif [[ "${TESTS}" == "QUICK" ]]
 then
     TESTS="${SCRIPT_DIR}/tests/20-fputil.bash ${SCRIPT_DIR}/tests/30-ints.bash"
     export TEST_TYPE="QUICK"    
+elif [[ "${TESTS}" == "RPI" ]]
+then
+    TESTS="${SCRIPT_DIR}/tests/20-fputil.bash ${SCRIPT_DIR}/tests/31-rpi-int.bash"
+    export TEST_TYPE="RPI"
 elif [[ "${TESTS}" == "STATIC" ]]
 then
     TESTS="${SCRIPT_DIR}/tests/40-pylama.bash"
