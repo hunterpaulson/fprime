@@ -6,28 +6,9 @@ Created on Feb. 9, 2015
 from __future__ import print_function
 
 # Import the types this way so they do not need prefixing for execution.
-from fprime.common.models.serialize.type_exceptions import *
-from fprime.common.models.serialize.type_base import *
-
-from fprime.common.models.serialize.bool_type import *
-from fprime.common.models.serialize.enum_type import *
-from fprime.common.models.serialize.f32_type import *
-from fprime.common.models.serialize.f64_type import *
-
-from fprime.common.models.serialize.u8_type import *
-from fprime.common.models.serialize.u16_type import *
-from fprime.common.models.serialize.u32_type import *
-from fprime.common.models.serialize.u64_type import *
-
-from fprime.common.models.serialize.i8_type import *
-from fprime.common.models.serialize.i16_type import *
-from fprime.common.models.serialize.i32_type import *
-from fprime.common.models.serialize.i64_type import *
-
-from fprime.common.models.serialize.string_type import *
-from fprime.common.models.serialize.serializable_type import *
-
-import struct
+from fprime.common.models.serialize.type_exceptions import TypeException
+from fprime.common.models.serialize.type_exceptions import TypeMismatchException
+from fprime.common.models.serialize.type_base import BaseType
 from enum import Enum
 import traceback
 
@@ -42,7 +23,9 @@ class Event(object):
     THis is essentially the equivalent of EVR's in MSL, SMAP, etc.
     """
 
-    def __init__(self, name, id, severity, format_string, event_description, arguments):
+    def __init__(
+        self, name, event_id, severity, format_string, event_description, arguments
+    ):
         """
         Constructor
         """
@@ -52,8 +35,8 @@ class Event(object):
         if not type(name) == type(str()):
             raise TypeMismatchException(type(str()), type(name))
 
-        if not type(id) == type(int()):
-            raise TypeMismatchException(type(int()), type(id))
+        if not type(event_id) == type(int()):
+            raise TypeMismatchException(type(int()), type(event_id))
 
         if not type(format_string) == type(str()):
             raise TypeMismatchException(type(str()), type(format_string))
@@ -77,7 +60,7 @@ class Event(object):
 
         # Initialize event internal variables
         self.__name = name
-        self.__id = id
+        self.__id = event_id
         self.__severity = severity
         self.__format_string = format_string
         self.__event_description = event_description
@@ -129,11 +112,7 @@ class Event(object):
         return self.__format_string
 
     def getEventDescription(self):
-        self.__event_description
+        return self.__event_description
 
     def getArgs(self):
         return self.__arguments
-
-
-if __name__ == "__main__":
-    pass

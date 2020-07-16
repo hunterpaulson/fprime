@@ -35,7 +35,7 @@ try:
     import fprime_gds.wxgui.tools.gds
 
     GUIS.append("wx")
-except ImportError as exc:
+except ImportError:
     pass
 
 
@@ -54,7 +54,6 @@ class ParserBase(abc.ABC):
         Produce a parser that will handle the given arguments. These parsers can be combined for a CLI for a tool by
         assembling them as parent processors to a parser for the given tool.
         """
-        pass
 
     @classmethod
     @abc.abstractmethod
@@ -66,7 +65,6 @@ class ParserBase(abc.ABC):
         :param args: arguments namespace of processed arguments
         :return: namespace with processed results of arguments.
         """
-        pass
 
     @staticmethod
     def parse_args(
@@ -91,7 +89,7 @@ class ParserBase(abc.ABC):
             for parser_base in parser_classes:
                 args = parser_base.handle_arguments(args, **kwargs)
         except ValueError as ver:
-            print("[ERROR] Failed to pars arguments: {}".format(ver), file=sys.stderr)
+            print("[ERROR] Failed to parse arguments: {}".format(ver), file=sys.stderr)
             sys.exit(-1)
         return args, parser
 

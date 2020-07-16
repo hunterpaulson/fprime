@@ -100,7 +100,7 @@ class SerialAdapter(fprime_gds.common.adapters.base.BaseAdapter):
             assert written == len(frame)
             return True
         except serial.serialutil.SerialException as exc:
-            LOGGER.warning("Serial exception caught: {}. Reconnecting.".format(exc))
+            LOGGER.warning("Serial exception caught: %s. Reconnecting.", (str(exc)))
             self.close()
         return False
 
@@ -124,7 +124,7 @@ class SerialAdapter(fprime_gds.common.adapters.base.BaseAdapter):
                     self.serial.in_waiting
                 )  # Drain the incoming data queue
         except serial.serialutil.SerialException as exc:
-            LOGGER.warning("Serial exception caught: {}. Reconnecting.".format(exc))
+            LOGGER.warning("Serial exception caught: %s. Reconnecting.", (str(exc)))
             self.close()
         return data
 
@@ -163,7 +163,9 @@ class SerialAdapter(fprime_gds.common.adapters.base.BaseAdapter):
         ports = map(lambda info: info.device, list_ports.comports(include_links=True))
         if not args["device"] in ports:
             raise ValueError(
-                "Serial port '{}' not valid. Available ports: {}".format(ports)
+                "Serial port '{}' not valid. Available ports: {}".format(
+                    args["device"], ports
+                )
             )
         # Note: baud rate may not *always* work. These are a superset
         baud = 0

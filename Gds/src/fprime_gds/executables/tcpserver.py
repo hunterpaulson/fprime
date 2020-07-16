@@ -4,24 +4,17 @@ import socket
 import threading
 
 try:
-    import queue
     import socketserver
 except ImportError:
-    import Queue as queue
     import SocketServer as socketserver
 import time
 import os
 import signal
 import sys
 import struct
-import select
-import multiprocessing
 import errno
-import time
-import logging
 
 from fprime.constants import DATA_ENCODING
-from fprime.common.models.serialize.type_base import *
 from optparse import OptionParser
 
 __version__ = 0.1
@@ -39,7 +32,7 @@ FSW_ids = []
 GUI_ids = []
 
 
-def signal_handler(signal, frame):
+def signal_handler(*_):
     print("Ctrl-C received, server shutting down.")
     shutdown_event.set()
 
@@ -140,32 +133,32 @@ class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
     def processRegistration(self, cmd):
 
         params = cmd.split()
-        id = 0
+        process_id = 0
 
         if params[0] == b"Register":
             LOCK.acquire()
             name = params[1]
             if b"FSW" in name:
                 if FSW_clients:
-                    id = sorted(FSW_ids)[-1] + 1
+                    process_id = sorted(FSW_ids)[-1] + 1
 
-                name = params[1] + b"_" + bytes(id)
+                name = params[1] + b"_" + bytes(process_id)
                 FSW_clients.append(name)
-                FSW_ids.append(id)
+                FSW_ids.append(process_id)
             elif b"GUI" in name:
                 if GUI_clients:
-                    id = sorted(GUI_ids)[-1] + 1
+                    process_id = sorted(GUI_ids)[-1] + 1
 
-                name = params[1] + b"_" + bytes(id)
+                name = params[1] + b"_" + bytes(process_id)
                 GUI_clients.append(name)
-                GUI_ids.append(id)
+                GUI_ids.append(process_id)
 
             SERVER.dest_obj[name] = DestObj(name, self.request)
             LOCK.release()
 
             self.registered = True
             self.name = name
-            self.id = id
+            self.id = process_id
             print("Registered client " + self.name.decode(DATA_ENCODING))
 
     #################################################
@@ -548,8 +541,6 @@ def main(argv=None):
         server_thread.start()
         udp_server_thread.daemon = False
         udp_server_thread.start()
-        p = os.getpid()
-        # print "Process ID: %s" % p
 
         while not shutdown_event.is_set():
             server_thread.join(timeout=5.0)

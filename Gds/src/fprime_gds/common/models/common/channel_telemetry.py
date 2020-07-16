@@ -6,28 +6,9 @@ Created on Apr. 27, 2015
 from __future__ import print_function
 
 # Import the types this way so they do not need prefixing for execution.
-from fprime.common.models.serialize.type_exceptions import *
-from fprime.common.models.serialize.type_base import *
-
-from fprime.common.models.serialize.bool_type import *
-from fprime.common.models.serialize.enum_type import *
-from fprime.common.models.serialize.f32_type import *
-from fprime.common.models.serialize.f64_type import *
-
-from fprime.common.models.serialize.u8_type import *
-from fprime.common.models.serialize.u16_type import *
-from fprime.common.models.serialize.u32_type import *
-from fprime.common.models.serialize.u64_type import *
-
-from fprime.common.models.serialize.i8_type import *
-from fprime.common.models.serialize.i16_type import *
-from fprime.common.models.serialize.i32_type import *
-from fprime.common.models.serialize.i64_type import *
-
-from fprime.common.models.serialize.string_type import *
-from fprime.common.models.serialize.serializable_type import *
-
-import struct
+from fprime.common.models.serialize.type_exceptions import TypeException
+from fprime.common.models.serialize.type_exceptions import TypeMismatchException
+from fprime.common.models.serialize.type_base import BaseType
 
 
 class Channel(object):
@@ -40,7 +21,7 @@ class Channel(object):
     def __init__(
         self,
         name,
-        id,
+        channel_id,
         comp_name,
         ch_description,
         ch_type,
@@ -61,8 +42,8 @@ class Channel(object):
         if not type(name) == type(str()):
             raise TypeMismatchException(type(str()), type(name))
 
-        if not type(id) == type(int()):
-            raise TypeMismatchException(type(int()), type(id))
+        if not type(channel_id) == type(int()):
+            raise TypeMismatchException(type(int()), type(channel_id))
 
         if not type(ch_description) == type(str()):
             raise TypeMismatchException(type(str()), type(ch_description))
@@ -73,7 +54,7 @@ class Channel(object):
         # Initialize event internal variables
         self.__name = name
         self.__comp_name = comp_name
-        self.__id = id
+        self.__id = channel_id
         self.__ch_desc = ch_description
         self.__ch_type = ch_type
         self.__format_string = ch_format_string
@@ -189,7 +170,3 @@ class Channel(object):
         if not ch == False or not ch == True:
             ch = True
         self.__changed = ch
-
-
-if __name__ == "__main__":
-    pass
