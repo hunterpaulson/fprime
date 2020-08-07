@@ -23,9 +23,12 @@ class TestRefAppClass(object):
         cls.pipeline = StandardPipeline()
         config = ConfigManager()
         filename = os.path.dirname(__file__)
-        path = os.path.join(filename, "../../Top/RefTopologyAppDictionary.xml")
+        # TODO: write an integration test specifically for the raspberry pi
+        # since this integration test was written for the Ref app, we have to use the Ref App Dictionary
+        path = os.path.join(filename, "../../Top/RefLikeRPITopologyAppDictionary.xml")
         cls.pipeline.setup(config, path, "/tmp")
-        cls.pipeline.connect("127.0.0.1", 50050)
+        # Change the address below for your specific raspberry pi
+        cls.pipeline.connect("10.0.0.31", 50000)
         logpath = os.path.join(filename, "./logs")
         cls.api = IntegrationTestAPI(cls.pipeline, logpath)
         cls.case_list = [] # TODO find a better way to do this. 
@@ -125,7 +128,7 @@ class TestRefAppClass(object):
         any_reordered = False
         dropped = False
         for i in range(0, length):
-            results = self.api.send_and_await_event("cmdDisp.CMD_NO_OP", events=evr_seq, timeout=25)
+            results = self.api.send_and_await_event("cmdDisp.CMD_NO_OP", events=evr_seq, timeout=5)
             msg = "Send and assert NO_OP Trial #{}".format(i)
             if not self.api.test_assert(len(results) == 3,msg, True):
                 items = self.api.get_event_test_history().retrieve()
